@@ -14,7 +14,7 @@
   },
   "repository": "git+https://github.com/Quramy/ngx-zombie-compiler.git",
   "keywords": [
-    "angular"
+    "angular", "karma"
   ],
   "author": "Quramy",
   "license": "MIT",
