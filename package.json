@@ -1,0 +1,38 @@
+{
+  "name": "ngx-zombie-compiler",
+  "version": "0.1.0",
+  "description": "Fast JiT compiler for Angular testing",
+  "main": "./dist/ngx-zombie-compiler.umd.js",
+  "module": "./dist/ngx-zombie-compiler.es5.js",
+  "es2015": "./dist/ngx-zombie-compiler.js",
+  "typings": "./dist/ngx-zombie-compiler.d.ts",
+  "scripts": {
+    "clean": "rimraf build dist",
+    "build": "ngc -p tsconfig.build.json && ngc -p tsconfig.es5.json && rollup -c rollup.config.js && rollup -c rollup.config.es5.js && rollup -c rollup.config.umd.js",
+    "test": "Fast JiT compiler for Angular testing"
+  },
+  "repository": "git+https://github.com/Quramy/ngx-zombie-compiler.git",
+  "keywords": [
+    "angular"
+  ],
+  "author": "Quramy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Quramy/ngx-zombie-compiler/issues"
+  },
+  "homepage": "https://github.com/Quramy/ngx-zombie-compiler#readme",
+  "peerDependencies": {
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0"
+  },
+  "devDependencies": {
+    "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.41.6",
+    "rxjs": "^5.0.1",
+    "typescript": "2.2.2",
+    "zone.js": "^0.8.4"
+  }
+}
