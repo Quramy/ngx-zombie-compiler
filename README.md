@@ -24,10 +24,6 @@ import { ZOMBIE_COMPILER_PROVIDERS } from 'ngx-zombie-compiler';
 
 // :
 
-// Unfortunately there's no typing for the `__karma__` variable. Just declare it as any.
-declare var __karma__: any;
-declare var require: any;
-
 // Second, configure TestBed's compiler
 beforeEach(() => {
   getTestBed().configureCompiler({
