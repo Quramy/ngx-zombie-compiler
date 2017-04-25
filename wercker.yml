@@ -23,3 +23,7 @@ build:
       code: |
         export DISPLAY=':99.0'
         xvfbd stop 
+
+deploy:
+  steps:
+    - turistforeningen/npm-publish
