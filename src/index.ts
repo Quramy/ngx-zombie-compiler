@@ -38,6 +38,7 @@ export function zombieCompilerFactory (
       injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, ngModuleResolver, directiveResolver,
     );
   } else {
+    compiler.setCleanDeps(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig);
     return compiler;
   }
 }

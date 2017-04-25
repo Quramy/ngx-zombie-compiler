@@ -26,9 +26,19 @@ let _outlivingCompiler: OutlivingTestingCompiler;
 
 @Injectable()
 export class OutlivingTestingCompiler extends JitCompiler {
+  private _delegate: JitCompiler;
   private _overrideFlag: boolean;
   private _moduleResolver: NgModuleResolver;
   private _resultCache: Map<Type<any>, ModuleWithComponentFactories<any>>;
+  private _cleanDependencies: {
+    injector: Injector,
+    metadataResolver: CompileMetadataResolver,
+    templateParser: TemplateParser,
+    styleCompiler: StyleCompiler,
+    viewCompiler: ViewCompiler,
+    ngModuleCompiler: NgModuleCompiler,
+    compilerConfig: CompilerConfig,
+  };
 
   static getInstance(): OutlivingTestingCompiler | undefined {
     return _outlivingCompiler;
@@ -63,6 +73,7 @@ export class OutlivingTestingCompiler extends JitCompiler {
     _directiveResolver: DirectiveResolver,
   ) {
     super(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _compilerConfig, console);
+    this.setCleanDeps(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _compilerConfig);
     this._moduleResolver = _ngModuleResolver;
     this._resultCache = new Map<Type<any>, ModuleWithComponentFactories<any>>();
     if (_directiveResolver instanceof MockDirectiveResolver) {
@@ -74,14 +85,31 @@ export class OutlivingTestingCompiler extends JitCompiler {
     }
   }
 
+  setCleanDeps(
+    injector: Injector,
+    metadataResolver: CompileMetadataResolver,
+    templateParser: TemplateParser,
+    styleCompiler: StyleCompiler,
+    viewCompiler: ViewCompiler,
+    ngModuleCompiler: NgModuleCompiler,
+    compilerConfig: CompilerConfig,
+  ) {
+    this._cleanDependencies = {
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig
+    };
+  }
+
   compileModuleAndAllComponentsSync<T>(moduleType: Type<T>) {
     const key = this._checkCacheIsEnabled(moduleType);
     if (!key) {
-      return super.compileModuleAndAllComponentsSync(moduleType);
+      return this._getCleanCompiler().compileModuleAndAllComponentsSync(moduleType);
     }
     const hit = this._resultCache.get(key);
     if (!hit) {
-      const result = super.compileModuleAndAllComponentsSync(moduleType);
+      if (!this._delegate) {
+        this._delegate = this._getCleanCompiler();
+      }
+      const result = this._delegate.compileModuleAndAllComponentsSync(moduleType);
       this._resultCache.set(key, result);
       return result;
     }  else {
@@ -92,11 +120,14 @@ export class OutlivingTestingCompiler extends JitCompiler {
   compileModuleAndAllComponentsAsync<T>(moduleType: Type<T>) {
     const key = this._checkCacheIsEnabled(moduleType);
     if (!key) {
-      return super.compileModuleAndAllComponentsAsync(moduleType);
+      return this._getCleanCompiler().compileModuleAndAllComponentsAsync(moduleType);
     }
     const hit = this._resultCache.get(key);
     if (!hit) {
-      return super.compileModuleAndAllComponentsAsync(moduleType).then(result => {
+      if (!this._delegate) {
+        this._delegate = this._getCleanCompiler();
+      }
+      return this._delegate.compileModuleAndAllComponentsAsync(moduleType).then(result => {
         this._resultCache.set(key, result);
         return result;
       });
@@ -107,14 +138,13 @@ export class OutlivingTestingCompiler extends JitCompiler {
 
   clearCache() {
     this._resultCache.clear();
-    return super.clearCache();
+    return this._delegate.clearCache();
   }
 
   private _checkCacheIsEnabled<T>(moduleType: Type<T>): Type<any> | null {
     // Note:
     // When orverriding via TestBed.overrid****, cache is no longer available.
     if (this._overrideFlag) {
-      this.clearCache();
       this._overrideFlag = false;
       return null;
     }
@@ -129,10 +159,16 @@ export class OutlivingTestingCompiler extends JitCompiler {
     if (ngModule.declarations.length > 1 || Array.isArray(ngModule.declarations[0])) {
       // FIXME 
       // How to create key when TestingModule has two or more declarations...?
-      this.clearCache();
       return null;
     }
     return ngModule.declarations[0] as Type<any>;
+  }
+
+  private _getCleanCompiler() {
+    const {
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig
+    } = this._cleanDependencies;
+    return new JitCompiler(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, console);
   }
 
   private _decorateResolver(resolverDelegate: MockDirectiveResolver, name: keyof MockDirectiveResolver) {
