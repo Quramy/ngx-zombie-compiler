@@ -2,6 +2,8 @@ src/
 test-app/
 build/
 tsconfig.json
+wercker.yml
+test.sh
 yarn.lock
 rollup.config.*
 tsconfig.*
