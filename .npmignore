@@ -1,3 +1,6 @@
 src/
+build/
 tsconfig.json
 yarn.lock
+rollup.config.*
+tsconfig.*
