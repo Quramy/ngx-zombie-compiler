@@ -1,5 +1,7 @@
 # ngx-zombie-compiler
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Quramy/ngx-zombie-compiler.svg)](https://greenkeeper.io/)
+
 Fast JiT compiler for Angular unit testing.
 
 ## Install
