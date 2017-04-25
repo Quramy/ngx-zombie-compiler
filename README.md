@@ -1,4 +1,5 @@
 # ngx-zombie-compiler
+[![npm version](https://badge.fury.io/js/ngx-zombie-compiler.svg)](https://badge.fury.io/js/ngx-zombie-compiler) [![dependencies Status](https://david-dm.org/quramy/ngx-zombie-compiler/status.svg)](https://david-dm.org/quramy/ngx-zombie-compiler) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Quramy/ngx-zombie-compiler/master/LICENSE) 
 
 Fast JiT compiler for Angular unit testing.
 
@@ -23,10 +24,6 @@ To use the compiler provided by this module, you need to configure it using `Tes
 import { ZOMBIE_COMPILER_PROVIDERS } from 'ngx-zombie-compiler';
 
 // :
-
-// Unfortunately there's no typing for the `__karma__` variable. Just declare it as any.
-declare var __karma__: any;
-declare var require: any;
 
 // Second, configure TestBed's compiler
 beforeEach(() => {
