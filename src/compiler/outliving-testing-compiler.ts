@@ -100,36 +100,62 @@ export class OutlivingTestingCompiler extends JitCompiler {
   }
 
   compileModuleAndAllComponentsSync<T>(moduleType: Type<T>) {
-    const key = this._checkCacheIsEnabled(moduleType);
-    if (!key) {
+    const { enabled, key } = this._checkCacheIsEnabled(moduleType);
+    if (!enabled) {
       return this._getCleanCompiler().compileModuleAndAllComponentsSync(moduleType);
+    }
+    if (!this._delegate) {
+      this._delegate = this._getCleanCompiler();
+    }
+    if (!key) {
+      try {
+        return this._delegate.compileModuleAndAllComponentsSync(moduleType);
+      } catch (e) {
+        this.clearCache();
+        this._delegate = this._getCleanCompiler();
+        return this._delegate.compileModuleAndAllComponentsSync(moduleType);
+      }
     }
     const hit = this._resultCache.get(key);
     if (!hit) {
-      if (!this._delegate) {
+      try {
+        const result = this._delegate.compileModuleAndAllComponentsSync(moduleType);
+        this._resultCache.set(key, result);
+        return result;
+      } catch (e) {
+        this.clearCache();
         this._delegate = this._getCleanCompiler();
+        return this._delegate.compileModuleAndAllComponentsSync(moduleType);
       }
-      const result = this._delegate.compileModuleAndAllComponentsSync(moduleType);
-      this._resultCache.set(key, result);
-      return result;
     }  else {
       return hit;
     }
   }
 
   compileModuleAndAllComponentsAsync<T>(moduleType: Type<T>) {
-    const key = this._checkCacheIsEnabled(moduleType);
-    if (!key) {
+    const { enabled, key } = this._checkCacheIsEnabled(moduleType);
+    if (!enabled) {
       return this._getCleanCompiler().compileModuleAndAllComponentsAsync(moduleType);
+    }
+    if (!this._delegate) {
+      this._delegate = this._getCleanCompiler();
+    }
+    if (!key) {
+      return Promise.resolve().then(() => this._delegate.compileModuleAndAllComponentsAsync(moduleType)).catch(reason => {
+        this.clearCache();
+        this._delegate = this._getCleanCompiler();
+        return this._delegate.compileModuleAndAllComponentsAsync(moduleType);
+      });
     }
     const hit = this._resultCache.get(key);
     if (!hit) {
-      if (!this._delegate) {
-        this._delegate = this._getCleanCompiler();
-      }
-      return this._delegate.compileModuleAndAllComponentsAsync(moduleType).then(result => {
+      return Promise.resolve().then(() => this._delegate.compileModuleAndAllComponentsAsync(moduleType).then(result => {
         this._resultCache.set(key, result);
         return result;
+      })).catch(reason => {
+        this.clearCache();
+        this._delegate = this._getCleanCompiler();
+        return this._delegate.compileModuleAndAllComponentsAsync(moduleType);
       });
     } else {
       return Promise.resolve<ModuleWithComponentFactories<T>>(hit);
@@ -141,12 +167,12 @@ export class OutlivingTestingCompiler extends JitCompiler {
     return this._delegate.clearCache();
   }
 
-  private _checkCacheIsEnabled<T>(moduleType: Type<T>): Type<any> | null {
+  private _checkCacheIsEnabled<T>(moduleType: Type<T>): { key?: Type<any> | null, enabled: boolean } {
     // Note:
     // When orverriding via TestBed.overrid****, cache is no longer available.
     if (this._overrideFlag) {
       this._overrideFlag = false;
-      return null;
+      return { enabled: false };
     }
 
     // Note:
@@ -154,14 +180,14 @@ export class OutlivingTestingCompiler extends JitCompiler {
     // > Type ${stringifyType(type)} is part of the declarations of 2 modules
     const ngModule = this._moduleResolver.resolve(moduleType);
     if (!ngModule.declarations || ngModule.declarations.length === 0) {
-      return null;
+      return { enabled: true, key: null };
     }
     if (ngModule.declarations.length > 1 || Array.isArray(ngModule.declarations[0])) {
       // FIXME 
       // How to create key when TestingModule has two or more declarations...?
-      return null;
+      return { enabled: false };
     }
-    return ngModule.declarations[0] as Type<any>;
+    return { enabled: true, key: ngModule.declarations[0] as Type<any> };
   }
 
   private _getCleanCompiler() {

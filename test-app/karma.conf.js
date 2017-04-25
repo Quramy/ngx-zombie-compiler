@@ -39,7 +39,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Nightmare'],
+    browsers: ['Chrome'],
     singleRun: false,
     nightmareOptions: {
       width: 800,
