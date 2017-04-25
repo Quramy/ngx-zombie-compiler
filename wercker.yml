@@ -1,0 +1,25 @@
+box: quramy/node-nightmare
+build:
+  steps:
+    - script:
+      name: set yarn cache
+      code: |
+        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+    - script:
+      name: install dependencies
+      code: |
+        HOME=$YARN_CACHE yarn
+    - script:
+      name: start xvfb daemon
+      code: |
+        export DISPLAY=':99.0'
+        xvfbd start
+    - script:
+      name: test
+      code: |
+        bash test.sh
+    - script: 
+      name: stop xvfb daemon
+      code: |
+        export DISPLAY=':99.0'
+        xvfbd stop 
