@@ -35,7 +35,9 @@ beforeEach(() => {
 
 ## Why?
 By the default, TestingCompiler provided by Angular compiles all modules by each spec and compiling modules makes your test heavy.
-In most cases, we can turn use the compiled result, so this module provide another JiT compiler which outlives default JiT compiler.
+In mane cases, we can turn use the compiled result, so this module provide another JiT compiler which outlives default JiT compiler and reuses the compiled result. So using this, you can reduce the total execution time to run unit testing.
+
+If you want details, please see [my gist](https://gist.github.com/Quramy/1dd5bed0bce1e7f34b79184453d1790f#configure-testbeds-compiler).
 
 ## License
 MIT
