@@ -1,6 +1,8 @@
 # ngx-zombie-compiler
 [![wercker status](https://app.wercker.com/status/5a0a95321e9f308a2e82388d339e4b16/s/master "wercker status")](https://app.wercker.com/project/byKey/5a0a95321e9f308a2e82388d339e4b16) [![npm version](https://badge.fury.io/js/ngx-zombie-compiler.svg)](https://badge.fury.io/js/ngx-zombie-compiler) [![dependencies Status](https://david-dm.org/quramy/ngx-zombie-compiler/status.svg)](https://david-dm.org/quramy/ngx-zombie-compiler) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Quramy/ngx-zombie-compiler/master/LICENSE) 
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Quramy/ngx-zombie-compiler.svg)](https://greenkeeper.io/)
+
 Fast JiT compiler for Angular unit testing.
 
 ## Install
