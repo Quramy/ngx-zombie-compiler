@@ -1,6 +1,6 @@
 {
   "name": "ngx-zombie-compiler",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Fast JiT compiler for Angular testing",
   "main": "./dist/ngx-zombie-compiler.umd.js",
   "module": "./dist/ngx-zombie-compiler.es5.js",
