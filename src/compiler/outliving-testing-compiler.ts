@@ -167,7 +167,9 @@ export class OutlivingTestingCompiler extends JitCompiler {
   clearCache() {
     super.clearCache();
     this._resultCache.clear();
-    return this._delegate.clearCache();
+    if (this._delegate) {
+      this._delegate.clearCache();
+    }
   }
 
   private _checkCacheIsEnabled<T>(moduleType: Type<T>): { key?: Type<any> | null, enabled?: boolean, useSuper?: boolean } {
