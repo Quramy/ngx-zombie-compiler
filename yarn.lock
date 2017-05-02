@@ -3,24 +3,24 @@
 
 
 "@angular/compiler-cli@^4.0.0":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.0.3.tgz#691f280bc4d6611a88d6555f43e57032a0d34300"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.1.0.tgz#727aaada8bfd94285e9818995925048f7fdf1200"
   dependencies:
-    "@angular/tsc-wrapped" "4.0.3"
+    "@angular/tsc-wrapped" "4.1.0"
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
 
 "@angular/compiler@^4.0.0":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.0.3.tgz#8b3cad338ac539328e10a6a4bfaa057094f7bc89"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.1.0.tgz#be1ade5b6aec81f03c29d52bcb95925a28900dcb"
 
 "@angular/core@^4.0.0":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.0.3.tgz#61be21db6aa5778e33159ffd38cbbebaf16120d9"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.1.0.tgz#72ec173316879571880c9c483ed6dfc0caab94b0"
 
-"@angular/tsc-wrapped@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-4.0.3.tgz#a5fea6a87df9c348faa5577c3698c8a363082781"
+"@angular/tsc-wrapped@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-4.1.0.tgz#07cbd61d91adde4c2daf9a41605152952b8832b3"
   dependencies:
     tsickle "^0.21.0"
 
@@ -140,14 +140,14 @@ tsickle@^0.21.0:
     source-map "^0.5.6"
     source-map-support "^0.4.2"
 
-typescript@2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
+typescript@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.2.tgz#f0f045e196f69a72f06b25fd3bd39d01c3ce9984"
 
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
 
 zone.js@^0.8.4:
-  version "0.8.8"
-  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.8.tgz#354f02bb7241af834bb83b310308a89ad012d3af"
+  version "0.8.9"
+  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.9.tgz#34aaa9a3ec6d0e4acebd1b761adafa590473638b"

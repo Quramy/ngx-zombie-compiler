@@ -1,5 +1,5 @@
 import { TestBed, async } from '@angular/core/testing';
-
+import { By } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { PiyoComponent } from './piyo/piyo.component';
 import { AppModule } from './app.module';
@@ -64,22 +64,40 @@ describe('import', () => {
 });
 
 describe('override', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        PiyoComponent,
-      ],
-    }).compileComponents();
-  }));
+  describe("first", () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          PiyoComponent,
+        ],
+      })
+      .overrideTemplate(PiyoComponent, '<div class="override">PIYO</div>')
+      .compileComponents()
+      ;
+    }));
 
-  it('should be run with zombie compiler', () => {
-    TestBed.overrideTemplate(PiyoComponent, '<div>PIYO</div>');
-    const fixture = TestBed.createComponent(PiyoComponent);
-    expect(fixture).toBeTruthy();
+    it('should be run with zombie compiler', () => {
+      TestBed
+      const fixture = TestBed.createComponent(PiyoComponent);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('.override'))).toBeTruthy();
+    });
   });
 
-  it('should be re-run with zombie compiler', () => {
-    const fixture = TestBed.createComponent(PiyoComponent);
-    expect(fixture).toBeTruthy();
+  describe("second", () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          PiyoComponent,
+        ],
+      }).compileComponents();
+    }));
+
+    it('should be re-run with zombie compiler', () => {
+      TestBed
+      const fixture = TestBed.createComponent(PiyoComponent);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('.original_piyo'))).toBeTruthy();
+    });
   });
 });

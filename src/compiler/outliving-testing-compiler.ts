@@ -76,13 +76,7 @@ export class OutlivingTestingCompiler extends JitCompiler {
     this.setCleanDeps(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _compilerConfig);
     this._moduleResolver = _ngModuleResolver;
     this._resultCache = new Map<Type<any>, ModuleWithComponentFactories<any>>();
-    if (_directiveResolver instanceof MockDirectiveResolver) {
-      this._decorateResolver(_directiveResolver, 'setDirective');
-      this._decorateResolver(_directiveResolver, 'setInlineTemplate');
-      this._decorateResolver(_directiveResolver, 'setProvidersOverride');
-      this._decorateResolver(_directiveResolver, 'setView');
-      this._decorateResolver(_directiveResolver, 'setViewProvidersOverride');
-    }
+    this._decorateResolver(_directiveResolver);
   }
 
   setCleanDeps(
@@ -100,7 +94,11 @@ export class OutlivingTestingCompiler extends JitCompiler {
   }
 
   compileModuleAndAllComponentsSync<T>(moduleType: Type<T>) {
-    const { enabled, key } = this._checkCacheIsEnabled(moduleType);
+    const { enabled, key, useSuper } = this._checkCacheIsEnabled(moduleType);
+    if (useSuper) {
+      this.clearCache();
+      return super.compileModuleAndAllComponentsSync(moduleType);
+    }
     if (!enabled) {
       return this._getCleanCompiler().compileModuleAndAllComponentsSync(moduleType);
     }
@@ -133,7 +131,11 @@ export class OutlivingTestingCompiler extends JitCompiler {
   }
 
   compileModuleAndAllComponentsAsync<T>(moduleType: Type<T>) {
-    const { enabled, key } = this._checkCacheIsEnabled(moduleType);
+    const { enabled, key, useSuper } = this._checkCacheIsEnabled(moduleType);
+    if (useSuper) {
+      this.clearCache();
+      return super.compileModuleAndAllComponentsAsync(moduleType);
+    }
     if (!enabled) {
       return this._getCleanCompiler().compileModuleAndAllComponentsAsync(moduleType);
     }
@@ -163,16 +165,18 @@ export class OutlivingTestingCompiler extends JitCompiler {
   }
 
   clearCache() {
+    super.clearCache();
     this._resultCache.clear();
     return this._delegate.clearCache();
   }
 
-  private _checkCacheIsEnabled<T>(moduleType: Type<T>): { key?: Type<any> | null, enabled: boolean } {
+  private _checkCacheIsEnabled<T>(moduleType: Type<T>): { key?: Type<any> | null, enabled?: boolean, useSuper?: boolean } {
     // Note:
     // When orverriding via TestBed.overrid****, cache is no longer available.
     if (this._overrideFlag) {
       this._overrideFlag = false;
-      return { enabled: false };
+      this.clearCache();
+      return { useSuper: true };
     }
 
     // Note:
@@ -197,7 +201,18 @@ export class OutlivingTestingCompiler extends JitCompiler {
     return new JitCompiler(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, console);
   }
 
-  private _decorateResolver(resolverDelegate: MockDirectiveResolver, name: keyof MockDirectiveResolver) {
+  private _decorateResolver(delegate: DirectiveResolver) {
+    if (delegate instanceof MockDirectiveResolver && !delegate['__wrapped__']) {
+      this._decorateResolverMethod(delegate, 'setDirective');
+      this._decorateResolverMethod(delegate, 'setInlineTemplate');
+      this._decorateResolverMethod(delegate, 'setProvidersOverride');
+      this._decorateResolverMethod(delegate, 'setView');
+      this._decorateResolverMethod(delegate, 'setViewProvidersOverride');
+      delegate['__wrapped__'] = true;
+    }
+  }
+
+  private _decorateResolverMethod(resolverDelegate: MockDirectiveResolver, name: keyof MockDirectiveResolver) {
     const orig = resolverDelegate[name] as Function, self = this;
     resolverDelegate[name] = function() {
       self._overrideFlag = true;
