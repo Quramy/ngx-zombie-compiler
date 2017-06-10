@@ -13,6 +13,7 @@ import {
   CompilerConfig,
   ViewCompiler,
   NgModuleResolver,
+  SummaryResolver,
   NgModuleCompiler,
   StyleCompiler,
   DirectiveResolver,
@@ -37,6 +38,7 @@ export class OutlivingTestingCompiler extends JitCompiler {
     styleCompiler: StyleCompiler,
     viewCompiler: ViewCompiler,
     ngModuleCompiler: NgModuleCompiler,
+    ngSummaryResolver: SummaryResolver<Type<any>>,
     compilerConfig: CompilerConfig,
   };
 
@@ -51,12 +53,13 @@ export class OutlivingTestingCompiler extends JitCompiler {
     styleCompiler: StyleCompiler,
     viewCompiler: ViewCompiler,
     ngModuleCompiler: NgModuleCompiler,
+    ngSummaryResolver: SummaryResolver<Type<any>>,
     compilerConfig: CompilerConfig,
     ngModuleResolver: NgModuleResolver,
     directiveResolver: DirectiveResolver,
   ): OutlivingTestingCompiler {
     _outlivingCompiler = new OutlivingTestingCompiler(
-      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, ngModuleResolver, directiveResolver,
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig, ngModuleResolver, directiveResolver,
     );
     return _outlivingCompiler;
   }
@@ -68,12 +71,13 @@ export class OutlivingTestingCompiler extends JitCompiler {
     _styleCompiler: StyleCompiler,
     _viewCompiler: ViewCompiler,
     _ngModuleCompiler: NgModuleCompiler,
+    _summaryResolver: SummaryResolver<Type<any>>,
     _compilerConfig: CompilerConfig,
     _ngModuleResolver: NgModuleResolver,
     _directiveResolver: DirectiveResolver,
   ) {
-    super(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _compilerConfig, console);
-    this.setCleanDeps(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _compilerConfig);
+    super(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _summaryResolver, _compilerConfig, console);
+    this.setCleanDeps(_injector, _metadataResolver, _templateParser, _styleCompiler, _viewCompiler, _ngModuleCompiler, _summaryResolver, _compilerConfig);
     this._moduleResolver = _ngModuleResolver;
     this._resultCache = new Map<Type<any>, ModuleWithComponentFactories<any>>();
     this._decorateResolver(_directiveResolver);
@@ -86,10 +90,11 @@ export class OutlivingTestingCompiler extends JitCompiler {
     styleCompiler: StyleCompiler,
     viewCompiler: ViewCompiler,
     ngModuleCompiler: NgModuleCompiler,
+    ngSummaryResolver: SummaryResolver<Type<any>>,
     compilerConfig: CompilerConfig,
   ) {
     this._cleanDependencies = {
-      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig
     };
   }
 
@@ -198,9 +203,9 @@ export class OutlivingTestingCompiler extends JitCompiler {
 
   private _getCleanCompiler() {
     const {
-      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig
     } = this._cleanDependencies;
-    return new JitCompiler(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, console);
+    return new JitCompiler(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig, console);
   }
 
   private _decorateResolver(delegate: DirectiveResolver) {
