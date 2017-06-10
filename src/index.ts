@@ -14,6 +14,7 @@ import {
   CompilerConfig,
   ViewCompiler,
   NgModuleResolver,
+  SummaryResolver,
   NgModuleCompiler,
   StyleCompiler,
   DirectiveResolver,
@@ -28,6 +29,7 @@ export function zombieCompilerFactory (
   styleCompiler: StyleCompiler,
   viewCompiler: ViewCompiler,
   ngModuleCompiler: NgModuleCompiler,
+  ngSummaryResolver: SummaryResolver<Type<any>>,
   compilerConfig: CompilerConfig,
   ngModuleResolver: NgModuleResolver,
   directiveResolver: DirectiveResolver,
@@ -35,10 +37,10 @@ export function zombieCompilerFactory (
   const compiler = OutlivingTestingCompiler.getInstance();
   if (!compiler) {
     return OutlivingTestingCompiler.initialize(
-      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig, ngModuleResolver, directiveResolver,
+      injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig, ngModuleResolver, directiveResolver,
     );
   } else {
-    compiler.setCleanDeps(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, compilerConfig);
+    compiler.setCleanDeps(injector, metadataResolver, templateParser, styleCompiler, viewCompiler, ngModuleCompiler, ngSummaryResolver, compilerConfig);
     return compiler;
   }
 }
@@ -59,6 +61,7 @@ export const ZombieCompilerProvider: FactoryProvider = {
     StyleCompiler,
     ViewCompiler,
     NgModuleCompiler,
+    SummaryResolver,
     CompilerConfig,
     NgModuleResolver,
     DirectiveResolver,
