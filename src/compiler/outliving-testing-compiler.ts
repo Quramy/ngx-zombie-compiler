@@ -190,7 +190,7 @@ export class OutlivingTestingCompiler extends JitCompiler {
     // To avoid for the following compilation syntax error, we use Component declared in TestingModule as a key of cache.
     // > Type ${stringifyType(type)} is part of the declarations of 2 modules
     const ngModule = this._moduleResolver.resolve(moduleType);
-    if (!ngModule.declarations || ngModule.declarations.length === 0) {
+    if (!ngModule || !ngModule.declarations || ngModule.declarations.length === 0) {
       return { enabled: true, key: null };
     }
     if (ngModule.declarations.length > 1 || Array.isArray(ngModule.declarations[0])) {
@@ -209,13 +209,13 @@ export class OutlivingTestingCompiler extends JitCompiler {
   }
 
   private _decorateResolver(delegate: DirectiveResolver) {
-    if (delegate instanceof MockDirectiveResolver && !delegate['__wrapped__']) {
+    if (delegate instanceof MockDirectiveResolver && !(delegate as any)['__wrapped__']) {
       this._decorateResolverMethod(delegate, 'setDirective');
       this._decorateResolverMethod(delegate, 'setInlineTemplate');
       this._decorateResolverMethod(delegate, 'setProvidersOverride');
       this._decorateResolverMethod(delegate, 'setView');
       this._decorateResolverMethod(delegate, 'setViewProvidersOverride');
-      delegate['__wrapped__'] = true;
+      (delegate as any)['__wrapped__'] = true;
     }
   }
 
